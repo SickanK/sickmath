@@ -13,7 +13,7 @@ pub mod iterator;
 pub mod math;
 pub mod math_ops;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum Vector<T, const N: usize> {
     Inline(InlineVector<T, N>),
     Heap(HeapVector<T, N>),
@@ -93,5 +93,20 @@ impl<T, const N: usize> IndexMut<usize> for Vector<T, N> {
             Self::Inline(inline_vector) => &mut inline_vector[idx],
             Self::Heap(heap_vector) => &mut heap_vector[idx],
         }
+    }
+}
+
+impl<T, const N: usize> PartialEq for Vector<T, N>
+where
+    T: PartialEq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        for idx in 0..N {
+            if self[idx] != other[idx] {
+                return false;
+            }
+        }
+
+        true
     }
 }

@@ -109,9 +109,9 @@ where
 
         let mut crossed_vec: Vec<T> = Vec::with_capacity(N);
 
-        crossed_vec[0] = self.data[1] * rhs[2] - self.data[2] * rhs[1];
-        crossed_vec[1] = self.data[2] * rhs[0] - self.data[0] * rhs[2];
-        crossed_vec[2] = self.data[0] * rhs[1] - self.data[1] * rhs[0];
+        crossed_vec.push(self.data[1] * rhs[2] - self.data[2] * rhs[1]);
+        crossed_vec.push(self.data[2] * rhs[0] - self.data[0] * rhs[2]);
+        crossed_vec.push(self.data[0] * rhs[1] - self.data[1] * rhs[0]);
 
         HeapVector { data: crossed_vec }
     }
@@ -170,27 +170,227 @@ where
 mod tests {
     use super::*;
 
+    #[test]
     fn heap_vector_scalar() {
         let heap_vector = HeapVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let scaled_heap_vector = HeapVector {
+        let scaled_heap_vector: HeapVector<u8, 4> = HeapVector {
             data: vec![3, 6, 9, 12],
         };
         assert_eq!(heap_vector.scalar(3), scaled_heap_vector);
     }
 
+    #[test]
     fn heap_vector_scalar_mut() {
-        let heap_vector = HeapVector {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
             data: vec![1, 2, 3, 4],
         };
 
         heap_vector.scalar_mut(3);
 
-        let scaled_heap_vector = HeapVector {
+        let scaled_heap_vector: HeapVector<u8, 4> = HeapVector {
             data: vec![3, 6, 9, 12],
         };
         assert_eq!(heap_vector, scaled_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_dot() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        assert_eq!(heap_vector_1.dot(heap_vector_2), 70);
+    }
+
+    #[test]
+    fn heap_vector_add_vector() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![6, 8, 10, 12],
+        };
+
+        assert_eq!(heap_vector_1.add_vector(heap_vector_2), added_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_add_vector_mut() {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        heap_vector.add_vector_mut(heap_vector_2);
+
+        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![6, 8, 10, 12],
+        };
+        assert_eq!(heap_vector, added_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_sub_vector() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![4, 4, 4, 4],
+        };
+
+        assert_eq!(
+            heap_vector_1.sub_vector(heap_vector_2),
+            subtracted_heap_vector
+        );
+    }
+
+    #[test]
+    fn heap_vector_sub_vector_mut() {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        heap_vector.sub_vector_mut(heap_vector_2);
+
+        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![4, 4, 4, 4],
+        };
+        assert_eq!(heap_vector, subtracted_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_entrywise() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 12, 21, 32],
+        };
+
+        assert_eq!(
+            heap_vector_1.entrywise(heap_vector_2),
+            multiplied_heap_vector
+        );
+    }
+
+    #[test]
+    fn heap_vector_entrywise_mut() {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        heap_vector.entrywise_mut(heap_vector_2);
+
+        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 12, 21, 32],
+        };
+        assert_eq!(heap_vector, multiplied_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_cross() {
+        let heap_vector_1: HeapVector<i8, 3> = HeapVector {
+            data: vec![1, 2, 3],
+        };
+
+        let heap_vector_2: HeapVector<i8, 3> = HeapVector {
+            data: vec![4, 5, 6],
+        };
+
+        let heap_vector_2_2: HeapVector<i8, 3> = HeapVector {
+            data: vec![4, 5, 6],
+        };
+
+        let d = heap_vector_1.cross(heap_vector_2_2);
+        println!("{:?}", d);
+
+        let crossed_heap_vector: HeapVector<i8, 3> = HeapVector {
+            data: vec![-3, 6, -3],
+        };
+
+        assert_eq!(heap_vector_1.cross(heap_vector_2), crossed_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_cross_mut() {
+        let mut heap_vector: HeapVector<i8, 3> = HeapVector {
+            data: vec![1, 2, 3],
+        };
+
+        let heap_vector_2: HeapVector<i8, 3> = HeapVector {
+            data: vec![4, 5, 6],
+        };
+
+        heap_vector.cross_mut(heap_vector_2);
+
+        let crossed_heap_vector: HeapVector<i8, 3> = HeapVector {
+            data: vec![-3, 6, -3],
+        };
+        assert_eq!(heap_vector, crossed_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_tensor_prod() {
+        let heap_vector_1: HeapVector<u8, 3> = HeapVector {
+            data: vec![1, 2, 3],
+        };
+
+        let heap_vector_2: HeapVector<u8, 3> = HeapVector {
+            data: vec![4, 5, 6],
+        };
+
+        let crossed_matrix_data = vec![vec![4, 5, 6], vec![8, 10, 12], vec![12, 15, 18]];
+
+        let tensor_product: Matrix<u8, 3, 3> = Matrix::new(crossed_matrix_data);
+
+        assert_eq!(heap_vector_1.tensor_prod(heap_vector_2), tensor_product);
+    }
+
+    #[test]
+    fn heap_vector_magnitude() {
+        let heap_vector: HeapVector<i8, 2> = HeapVector { data: vec![2, 2] };
+
+        assert_eq!(heap_vector.magnitude(), 2);
+    }
+    #[test]
+    fn heap_vector_sum() {
+        let heap_vector: HeapVector<i8, 3> = HeapVector {
+            data: vec![1, 2, 3],
+        };
+
+        assert_eq!(heap_vector.sum(), 6);
     }
 }

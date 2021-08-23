@@ -10,7 +10,7 @@ use into_2d_vector::Into2dVector;
 use num::FromPrimitive;
 use rand::{distributions::Standard, prelude::Distribution};
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub struct Matrix<T, const M: usize, const N: usize> {
     inner: [Vector<T, N>; M],
 }

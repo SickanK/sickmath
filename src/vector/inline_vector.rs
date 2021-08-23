@@ -9,7 +9,7 @@ use std::ops::{Deref, Index, IndexMut};
 use self::into_array::IntoArray;
 use rand::{distributions::Standard, prelude::Distribution, Rng};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct InlineVector<T, const N: usize> {
     pub data: [T; N],
 }

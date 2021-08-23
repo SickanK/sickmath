@@ -41,7 +41,7 @@ mod tests {
     fn into_vec_from_vec() {
         let vec = vec![1, 2, 3, 4];
 
-        assert_eq!(vec.into_vec(), vec![1, 2, 3, 4]);
+        assert_eq!(IntoVec::<u8, 4>::into_vec(vec), vec![1, 2, 3, 4]);
     }
 
     #[test]

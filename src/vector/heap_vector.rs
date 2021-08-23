@@ -4,12 +4,11 @@ pub mod math;
 pub mod math_ops;
 
 use self::into_vec::IntoVec;
+
 use rand::{distributions::Standard, prelude::Distribution, Rng};
 use std::convert::TryInto;
-use std::{
-    fmt::Debug,
-    ops::{Index, IndexMut},
-};
+use std::ops::Index;
+use std::{fmt::Debug, ops::IndexMut};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct HeapVector<T, const N: usize> {
