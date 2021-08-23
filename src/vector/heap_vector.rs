@@ -11,7 +11,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct HeapVector<T, const N: usize> {
     pub data: Vec<T>,
 }

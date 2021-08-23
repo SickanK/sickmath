@@ -165,3 +165,32 @@ where
         ToPrimitive::to_isize(&acc).expect("Valid integers are required to calculate the sum")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn heap_vector_scalar() {
+        let heap_vector = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let scaled_heap_vector = HeapVector {
+            data: vec![3, 6, 9, 12],
+        };
+        assert_eq!(heap_vector.scalar(3), scaled_heap_vector);
+    }
+
+    fn heap_vector_scalar_mut() {
+        let heap_vector = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        heap_vector.scalar_mut(3);
+
+        let scaled_heap_vector = HeapVector {
+            data: vec![3, 6, 9, 12],
+        };
+        assert_eq!(heap_vector, scaled_heap_vector);
+    }
+}

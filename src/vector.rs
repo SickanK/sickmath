@@ -13,7 +13,7 @@ pub mod iterator;
 pub mod math;
 pub mod math_ops;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Vector<T, const N: usize> {
     Inline(InlineVector<T, N>),
     Heap(HeapVector<T, N>),

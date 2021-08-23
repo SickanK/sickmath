@@ -32,3 +32,29 @@ where
         self.to_vec()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn into_vec_from_vec() {
+        let vec = vec![1, 2, 3, 4];
+
+        assert_eq!(vec.into_vec(), vec![1, 2, 3, 4]);
+    }
+
+    #[test]
+    fn into_vec_from_array() {
+        let array = [1, 2, 3, 4];
+
+        assert_eq!(array.into_vec(), vec![1, 2, 3, 4]);
+    }
+
+    #[test]
+    fn into_vec_from_inline_vector() {
+        let inline_vector = InlineVector { data: [1, 2, 3, 4] };
+
+        assert_eq!(inline_vector.into_vec(), vec![1, 2, 3, 4]);
+    }
+}
