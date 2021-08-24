@@ -1,7 +1,6 @@
 use crate::vector::Vector;
 use core::fmt;
 use num::FromPrimitive;
-use std::mem::{replace, swap, take};
 
 pub trait Into2dVector<T, const M: usize, const N: usize> {
     fn into_2d_vector(self) -> [Vector<T, N>; M];

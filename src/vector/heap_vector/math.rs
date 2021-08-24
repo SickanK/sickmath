@@ -330,13 +330,6 @@ mod tests {
             data: vec![4, 5, 6],
         };
 
-        let heap_vector_2_2: HeapVector<i8, 3> = HeapVector {
-            data: vec![4, 5, 6],
-        };
-
-        let d = heap_vector_1.cross(heap_vector_2_2);
-        println!("{:?}", d);
-
         let crossed_heap_vector: HeapVector<i8, 3> = HeapVector {
             data: vec![-3, 6, -3],
         };

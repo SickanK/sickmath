@@ -297,11 +297,6 @@ mod tests {
 
         let inline_vector_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
 
-        let inline_vector_2_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
-
-        let d = inline_vector_1.cross(inline_vector_2_2);
-        println!("{:?}", d);
-
         let crossed_inline_vector: InlineVector<i8, 3> = InlineVector { data: [-3, 6, -3] };
 
         assert_eq!(
