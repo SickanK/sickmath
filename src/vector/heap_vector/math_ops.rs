@@ -128,3 +128,113 @@ where
         self.entrywise_mut(rhs)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn heap_vector_add_vector() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![6, 8, 10, 12],
+        };
+
+        assert_eq!(heap_vector_1 + heap_vector_2, added_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_add_vector_mut() {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        heap_vector += heap_vector_2;
+
+        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![6, 8, 10, 12],
+        };
+        assert_eq!(heap_vector, added_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_sub_vector() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![4, 4, 4, 4],
+        };
+
+        assert_eq!(heap_vector_1 - heap_vector_2, subtracted_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_sub_vector_mut() {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        heap_vector -= heap_vector_2;
+
+        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![4, 4, 4, 4],
+        };
+        assert_eq!(heap_vector, subtracted_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_entrywise() {
+        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 12, 21, 32],
+        };
+
+        assert_eq!(heap_vector_1 * heap_vector_2, multiplied_heap_vector);
+    }
+
+    #[test]
+    fn heap_vector_entrywise_mut() {
+        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        heap_vector *= heap_vector_2;
+
+        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+            data: vec![5, 12, 21, 32],
+        };
+        assert_eq!(heap_vector, multiplied_heap_vector);
+    }
+}
