@@ -167,3 +167,184 @@ where
         ToPrimitive::to_isize(&acc).expect("Valid integers are required to calculate the sum")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inline_vector_scalar() {
+        let inline_vector = InlineVector { data: [1, 2, 3, 4] };
+
+        let scaled_inline_vector: InlineVector<u8, 4> = InlineVector {
+            data: [3, 6, 9, 12],
+        };
+
+        assert_eq!(inline_vector.scalar(3), scaled_inline_vector);
+    }
+
+    #[test]
+    fn inline_vector_scalar_mut() {
+        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        inline_vector.scalar_mut(3);
+
+        let scaled_inline_vector: InlineVector<u8, 4> = InlineVector {
+            data: [3, 6, 9, 12],
+        };
+
+        assert_eq!(inline_vector, scaled_inline_vector);
+    }
+
+    #[test]
+    fn inline_vector_dot() {
+        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        assert_eq!(inline_vector_1.dot(inline_vector_2), 70);
+    }
+
+    #[test]
+    fn inline_vector_add_vector() {
+        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        let added_inline_vector: InlineVector<u8, 4> = InlineVector {
+            data: [6, 8, 10, 12],
+        };
+
+        assert_eq!(
+            inline_vector_1.add_vector(inline_vector_2),
+            added_inline_vector
+        );
+    }
+
+    #[test]
+    fn inline_vector_add_vector_mut() {
+        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        inline_vector.add_vector_mut(inline_vector_2);
+
+        let added_inline_vector: InlineVector<u8, 4> = InlineVector {
+            data: [6, 8, 10, 12],
+        };
+        assert_eq!(inline_vector, added_inline_vector);
+    }
+
+    #[test]
+    fn inline_vector_sub_vector() {
+        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        let subtracted_inline_vector: InlineVector<u8, 4> = InlineVector { data: [4, 4, 4, 4] };
+
+        assert_eq!(
+            inline_vector_1.sub_vector(inline_vector_2),
+            subtracted_inline_vector
+        );
+    }
+
+    #[test]
+    fn inline_vector_sub_vector_mut() {
+        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        inline_vector.sub_vector_mut(inline_vector_2);
+
+        let subtracted_inline_vector: InlineVector<u8, 4> = InlineVector { data: [4, 4, 4, 4] };
+        assert_eq!(inline_vector, subtracted_inline_vector);
+    }
+
+    #[test]
+    fn inline_vector_entrywise() {
+        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        let multiplied_inline_vector: InlineVector<u8, 4> = InlineVector {
+            data: [5, 12, 21, 32],
+        };
+
+        assert_eq!(
+            inline_vector_1.entrywise(inline_vector_2),
+            multiplied_inline_vector
+        );
+    }
+
+    #[test]
+    fn inline_vector_entrywise_mut() {
+        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+
+        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+
+        inline_vector.entrywise_mut(inline_vector_2);
+
+        let multiplied_inline_vector: InlineVector<u8, 4> = InlineVector {
+            data: [5, 12, 21, 32],
+        };
+        assert_eq!(inline_vector, multiplied_inline_vector);
+    }
+
+    #[test]
+    fn inline_vector_cross() {
+        let inline_vector_1: InlineVector<i8, 3> = InlineVector { data: [1, 2, 3] };
+
+        let inline_vector_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
+
+        let inline_vector_2_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
+
+        let d = inline_vector_1.cross(inline_vector_2_2);
+        println!("{:?}", d);
+
+        let crossed_inline_vector: InlineVector<i8, 3> = InlineVector { data: [-3, 6, -3] };
+
+        assert_eq!(
+            inline_vector_1.cross(inline_vector_2),
+            crossed_inline_vector
+        );
+    }
+
+    #[test]
+    fn inline_vector_cross_mut() {
+        let mut inline_vector: InlineVector<i8, 3> = InlineVector { data: [1, 2, 3] };
+
+        let inline_vector_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
+
+        inline_vector.cross_mut(inline_vector_2);
+
+        let crossed_inline_vector: InlineVector<i8, 3> = InlineVector { data: [-3, 6, -3] };
+        assert_eq!(inline_vector, crossed_inline_vector);
+    }
+
+    #[test]
+    fn inline_vector_tensor_prod() {
+        let inline_vector_1: InlineVector<u8, 3> = InlineVector { data: [1, 2, 3] };
+
+        let inline_vector_2: InlineVector<u8, 3> = InlineVector { data: [4, 5, 6] };
+
+        let crossed_matrix_data = [[4, 5, 6], [8, 10, 12], [12, 15, 18]];
+
+        let tensor_product: Matrix<u8, 3, 3> = Matrix::new(crossed_matrix_data);
+
+        assert_eq!(inline_vector_1.tensor_prod(inline_vector_2), tensor_product);
+    }
+
+    #[test]
+    fn inline_vector_magnitude() {
+        let inline_vector: InlineVector<i8, 2> = InlineVector { data: [2, 2] };
+
+        assert_eq!(inline_vector.magnitude(), 2);
+    }
+    #[test]
+    fn inline_vector_sum() {
+        let inline_vector: InlineVector<i8, 3> = InlineVector { data: [1, 2, 3] };
+
+        assert_eq!(inline_vector.sum(), 6);
+    }
+}

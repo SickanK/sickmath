@@ -1,3 +1,4 @@
+use crate::vector::heap_vector::into_vec::IntoVec;
 use std::convert::TryInto;
 
 use crate::vector::heap_vector::HeapVector;
@@ -29,5 +30,33 @@ where
 {
     fn into_array(self) -> [T; N] {
         self.to_array()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn into_array_from_array() {
+        let array = [1, 2, 3, 4];
+
+        assert_eq!(array.into_array(), [1, 2, 3, 4]);
+    }
+
+    #[test]
+    fn into_array_from_vec() {
+        let array = [1, 2, 3, 4];
+
+        assert_eq!(array.into_vec(), [1, 2, 3, 4]);
+    }
+
+    #[test]
+    fn into_array_from_heap_vector() {
+        let heap_vector = HeapVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        assert_eq!(heap_vector.into_array(), [1, 2, 3, 4]);
     }
 }
