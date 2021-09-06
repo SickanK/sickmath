@@ -6,6 +6,7 @@ A fast math library for Rust written to support my machine learning project [sic
 The library currently only have a fast and scalable Vector and Matrix implementation.
 
 ## Todo
+- [ ] Rename HeapVector to LargeVector and InlineVector to SmallVector
 - [ ] Finalize the Vector and Matrix implementation
 - [ ] Write missing Documentation
 - [ ] Add missing Tests
