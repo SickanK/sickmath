@@ -1,7 +1,6 @@
 //! Math crate targeted at machine learning.
 //!
-//! Provides fast and scalable Vector and Matrix implementation which
-//! can be used both on the stack as well as on the heap.
+//! Provides a fast and scalable Vector and Matrix implementation.
 
 /// Implement your own Vector type
 mod math_vector;
@@ -9,6 +8,6 @@ pub use math_vector::MathVector;
 /// Multiple vectors wrapped in an array
 mod matrix;
 pub use matrix::Matrix;
-/// Supports both Inline and Heap vectors
+/// Supports both `SmallVector` and `LargeVector`
 mod vector;
 pub use vector::Vector;

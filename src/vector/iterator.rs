@@ -50,8 +50,8 @@ where
             self.current += 1;
 
             match &self.data {
-                Vector::Inline(small_vector) => Some(small_vector[current]),
-                Vector::Heap(large_vector) => Some(large_vector[current]),
+                Vector::Small(small_vector) => Some(small_vector[current]),
+                Vector::Large(large_vector) => Some(large_vector[current]),
             }
         }
     }
@@ -110,8 +110,8 @@ where
             self.current += 1;
 
             match self.data {
-                Vector::Inline(small_vector) => Some(&small_vector[current]),
-                Vector::Heap(large_vector) => Some(&large_vector[current]),
+                Vector::Small(small_vector) => Some(&small_vector[current]),
+                Vector::Large(large_vector) => Some(&large_vector[current]),
             }
         }
     }
@@ -154,11 +154,11 @@ where
             self.current += 1;
 
             match self.data {
-                Vector::Inline(small_vector) => {
+                Vector::Small(small_vector) => {
                     let ptr = small_vector.data.as_mut_ptr();
                     return Some(unsafe { &mut *ptr.add(current) });
                 }
-                Vector::Heap(large_vector) => {
+                Vector::Large(large_vector) => {
                     let ptr = large_vector.data.as_mut_ptr();
                     return Some(unsafe { &mut *ptr.add(current) });
                 }
@@ -183,7 +183,7 @@ where
                 idx += 1;
             }
 
-            Vector::Inline(SmallVector::new(collector))
+            Vector::Small(SmallVector::new(collector))
         } else {
             let mut collector: Vec<T> = Vec::with_capacity(N);
 
@@ -191,7 +191,7 @@ where
                 collector.push(item);
             }
 
-            Vector::Heap(LargeVector::new(collector))
+            Vector::Large(LargeVector::new(collector))
         }
     }
 }

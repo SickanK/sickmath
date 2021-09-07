@@ -15,14 +15,29 @@ pub mod small_vector;
 
 /// A mathematical vector that can either be allocated on the heap or stack.
 ///
-/// A `Vector` is either an SmallVector or a LargeVector.
-/// The interface for the type as a whole is a bunch of methods that just match on
-/// the enum variant and then call the same method on the inner vec.
+/// `Vector` has a fixed length determined by a const generic parameter. You can use any type tha's
+/// within the requirements of `MathVector`.
+///
+/// ## Types
+/// A `Vector` is either a `SmallVector` or a `LargeVector`. It will by default create a
+/// `SmallVector` as you'll most likely never have to use `LargeVector`. However, in matrices
+/// larger than 100x100 a heap allocated vector is preferably used.
+///
+/// ### SmallVector
+/// Is allocated on the stack using the built in array data type.
+/// As such it will be significatly faster than `LargeVector` while being limited by the size of
+/// the stack.
+///
+/// ### LargeVector
+/// Is allocated on the heap using [`Vec`](https://doc.rust-lang.org/alloc/vec/struct.Vec.html).
+/// Because it's heap allocated it will be slower than `SmallVector`
+/// without a size limit.
+/// This vector will behave just as `SmallVector` and will thus not have dynamic resizing.
 ///
 /// ## Construction
 ///
-/// To create a fast inline vector you can do that from a data type or by random numbers.
-/// Any data type that implement IntoArray will work to create a new vector.
+/// You can either create one from another data type that implements `IntoArray` or
+/// create one using random numbers.
 /// ```rust
 /// # use sickmath::*;
 /// let vector: Vector<u8, 3> = Vector::new([1, 2, 3]);
@@ -31,14 +46,15 @@ pub mod small_vector;
 ///
 /// You will sometimes need a larger but slower vector allocated on the heap.
 /// Any data type that implement IntoVec will work to create a new vector.
+/// You can also create one with random numbers.
 /// ```rust
 /// # use sickmath::*;
-/// let large_vector: Vector<u8, 3> = Vector::heap([1, 2, 3]);
-/// let large_random_vector: Vector<u8, 3> = Vector::heap_random();
+/// let large_vector: Vector<u8, 3> = Vector::new_large([1, 2, 3]);
+/// let large_random_vector: Vector<u8, 3> = Vector::new_large_random();
 /// ```
 ///
-/// Vector also supports default which will create a new inline vector using the default of the
-/// chosen data type within.
+/// `Vector` also supports default which will create a new `SmallVector`
+/// using the default value of the chosen data type.
 /// ```rust
 /// # use sickmath::*;
 /// let default_vector: Vector<u8, 3> = Vector::default();
@@ -47,15 +63,15 @@ pub mod small_vector;
 /// ## Example
 /// ```rust
 /// # use sickmath::*;
-/// let vector: Vector<u8, 3> = Vector::new([1, 2, 3]);
-/// let random_large_vector: Vector<u8, 3> = Vector::heap_random();
+/// let vector: Vector<f64, 3> = Vector::new([0.2, 0.5, 0.8]);
+/// let random_large_vector: Vector<f64, 3> = Vector::new_large_random();
 ///
 /// println!("{:?}", vector * random_large_vector);
 /// ```
 #[derive(Debug, Clone)]
 pub enum Vector<T, const N: usize> {
-    Inline(SmallVector<T, N>),
-    Heap(LargeVector<T, N>),
+    Small(SmallVector<T, N>),
+    Large(LargeVector<T, N>),
 }
 
 impl<T, const N: usize> Vector<T, N>
@@ -68,10 +84,10 @@ where
     /// let vector: Vector<u8, 3> = Vector::new([1, 2, 3]);
     /// ```
     pub fn new(data: impl IntoArray<T, N>) -> Self {
-        Self::Inline(SmallVector::new(data))
+        Self::Small(SmallVector::new(data))
     }
 
-    /// Creates a new random inline vector
+    /// Create a new random `SmallVectr`
     /// ```rust
     /// # use sickmath::*;
     /// let random_vector: Vector<u8, 3> = Vector::new_random();
@@ -82,31 +98,31 @@ where
         Standard: Distribution<T>,
     {
         if N < 5001 {
-            Self::Inline(SmallVector::new_random())
+            Self::Small(SmallVector::new_random())
         } else {
-            Self::Heap(LargeVector::new_random())
+            Self::Large(LargeVector::new_random())
         }
     }
 
-    /// Creates a new inline vector from any data type that implements `IntoVec`
+    /// Create a new `LargeVector` from any data type that implements `IntoVec`
     /// ```rust
     /// # use sickmath::*;
-    /// let large_vector: Vector<u16, 3> = Vector::heap(vec![1, 2, 3]);
+    /// let large_vector: Vector<u16, 3> = Vector::new_large(vec![1, 2, 3]);
     /// ```
-    pub fn heap(data: impl IntoVec<T, N>) -> Self {
-        Self::Heap(LargeVector::new(data))
+    pub fn new_large(data: impl IntoVec<T, N>) -> Self {
+        Self::Large(LargeVector::new(data))
     }
 
-    /// Creates a new random heap vector
+    /// Create a new random `LargeVector`
     /// ```rust
     /// # use sickmath::*;
-    /// let large_random_vector: Vector<f64, 3> = Vector::heap_random();
+    /// let large_random_vector: Vector<f64, 3> = Vector::new_large_random();
     /// ```
-    pub fn heap_random() -> Self
+    pub fn new_large_random() -> Self
     where
         Standard: Distribution<T>,
     {
-        Self::Heap(LargeVector::new_random())
+        Self::Large(LargeVector::new_random())
     }
 }
 
@@ -115,7 +131,7 @@ where
     T: Default + Copy,
 {
     fn default() -> Self {
-        Self::Inline(SmallVector::default())
+        Self::Small(SmallVector::default())
     }
 }
 
@@ -124,8 +140,8 @@ impl<T, const N: usize> Index<usize> for Vector<T, N> {
 
     fn index(&self, idx: usize) -> &Self::Output {
         match self {
-            Self::Inline(small_vector) => &small_vector[idx],
-            Self::Heap(large_vector) => &large_vector[idx],
+            Self::Small(small_vector) => &small_vector[idx],
+            Self::Large(large_vector) => &large_vector[idx],
         }
     }
 }
@@ -133,8 +149,8 @@ impl<T, const N: usize> Index<usize> for Vector<T, N> {
 impl<T, const N: usize> IndexMut<usize> for Vector<T, N> {
     fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
         match self {
-            Self::Inline(small_vector) => &mut small_vector[idx],
-            Self::Heap(large_vector) => &mut large_vector[idx],
+            Self::Small(small_vector) => &mut small_vector[idx],
+            Self::Large(large_vector) => &mut large_vector[idx],
         }
     }
 }

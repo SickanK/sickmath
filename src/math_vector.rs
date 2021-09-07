@@ -2,14 +2,15 @@ use std::ops::Index;
 
 use crate::matrix::Matrix;
 
-/// A trait for types that are a mathematical vector.
+/// A trait for mathematical vectors.
 ///
 ///  Implementing `MathVector` and `Index` on a data type makes it possible to perform mathematical
-///  operations with other data types that implements `MathVector`.
+///  operations with other data types that implements `MathVector` such as `Vector`.
 ///
 ///  ## Mutable methods
-///  Most methods will have a mutable alternative which will mutate the right hand side vector instead of creating
-///  a new one. This makes the operation faster and should be used in most cases.
+///  Most methods will have a mutable alternative which will mutate the right hand side argument instead of creating
+///  a new one.
+///  This vastly increases the speed of the operation and should be used in most cases.
 pub trait MathVector<T, const N: usize> {
     /// Scalar multiplication
     fn scalar(&self, scalar: isize) -> Self;
@@ -38,23 +39,21 @@ pub trait MathVector<T, const N: usize> {
     /// Mutable entrywise vector multiplication
     fn entrywise_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>);
 
-    /// Cross product.
-    /// * Note: Will panic of vector hasn't a length of 3
+    /// Cross product. Will panic if vector has a length other than 3
     fn cross(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self;
 
-    /// Mutable cross product.
-    /// * Note: Will panic of vector hasn't a length of 3
+    /// Mutable cross product. Will panic if vector has a length other than 3
     fn cross_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>);
 
-    /// Tensor product. Will return a `Matrix` instead of itself
+    /// Tensor product. Will return a `Matrix` instead of `Self`
     fn tensor_prod<const M: usize>(
         &self,
         rhs: impl MathVector<T, N> + Index<usize, Output = T>,
     ) -> Matrix<T, M, N>;
 
-    /// Calculate the magnitude of the vector
+    /// Magnitude of the vector
     fn magnitude(&self) -> usize;
 
-    /// Calculate the sum of all items
+    /// Sum of all items
     fn sum(&self) -> isize;
 }
