@@ -1,7 +1,7 @@
-use crate::vector::heap_vector::into_vec::IntoVec;
+use crate::vector::large_vector::into_vec::IntoVec;
 use std::convert::TryInto;
 
-use crate::vector::heap_vector::HeapVector;
+use crate::vector::large_vector::LargeVector;
 
 pub trait IntoArray<T, const N: usize> {
     fn into_array(self) -> [T; N];
@@ -24,7 +24,7 @@ impl<T, const N: usize> IntoArray<T, N> for Vec<T> {
     }
 }
 
-impl<T, const N: usize> IntoArray<T, N> for HeapVector<T, N>
+impl<T, const N: usize> IntoArray<T, N> for LargeVector<T, N>
 where
     T: Clone,
 {
@@ -52,11 +52,11 @@ mod tests {
     }
 
     #[test]
-    fn into_array_from_heap_vector() {
-        let heap_vector = HeapVector {
+    fn into_array_from_large_vector() {
+        let large_vector = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        assert_eq!(heap_vector.into_array(), [1, 2, 3, 4]);
+        assert_eq!(large_vector.into_array(), [1, 2, 3, 4]);
     }
 }

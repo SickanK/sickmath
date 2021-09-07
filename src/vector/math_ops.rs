@@ -27,7 +27,7 @@ where
     fn add(self, rhs: Self) -> Self {
         match self {
             Self::Inline(inline_vector) => Vector::Inline(inline_vector.add_vector(rhs)),
-            Self::Heap(heap_vector) => Vector::Heap(heap_vector.add_vector(rhs)),
+            Self::Heap(large_vector) => Vector::Heap(large_vector.add_vector(rhs)),
         }
     }
 }
@@ -49,7 +49,7 @@ where
     fn add_assign(&mut self, rhs: Self) {
         match self {
             Self::Inline(inline_vector) => inline_vector.add_vector_mut(rhs),
-            Self::Heap(heap_vector) => heap_vector.add_vector_mut(rhs),
+            Self::Heap(large_vector) => large_vector.add_vector_mut(rhs),
         }
     }
 }
@@ -73,7 +73,7 @@ where
     fn sub(self, rhs: Self) -> Self {
         match self {
             Self::Inline(inline_vector) => Vector::Inline(inline_vector.sub_vector(rhs)),
-            Self::Heap(heap_vector) => Vector::Heap(heap_vector.add_vector(rhs)),
+            Self::Heap(large_vector) => Vector::Heap(large_vector.add_vector(rhs)),
         }
     }
 }
@@ -95,7 +95,7 @@ where
     fn sub_assign(&mut self, rhs: Self) {
         match self {
             Self::Inline(inline_vector) => inline_vector.sub_vector_mut(rhs),
-            Self::Heap(heap_vector) => heap_vector.add_vector_mut(rhs),
+            Self::Heap(large_vector) => large_vector.add_vector_mut(rhs),
         }
     }
 }
@@ -119,7 +119,7 @@ where
     fn mul(self, rhs: Self) -> Self {
         match self {
             Self::Inline(inline_vector) => Vector::Inline(inline_vector.entrywise(rhs)),
-            Self::Heap(heap_vector) => Vector::Heap(heap_vector.entrywise(rhs)),
+            Self::Heap(large_vector) => Vector::Heap(large_vector.entrywise(rhs)),
         }
     }
 }
@@ -141,7 +141,7 @@ where
     fn mul_assign(&mut self, rhs: Self) {
         match self {
             Self::Inline(inline_vector) => inline_vector.entrywise_mut(rhs),
-            Self::Heap(heap_vector) => heap_vector.entrywise_mut(rhs),
+            Self::Heap(large_vector) => large_vector.entrywise_mut(rhs),
         }
     }
 }

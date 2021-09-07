@@ -1,4 +1,4 @@
-use crate::vector::{heap_vector::HeapVector, inline_vector::InlineVector};
+use crate::vector::{inline_vector::InlineVector, large_vector::LargeVector};
 
 use super::Vector;
 
@@ -51,7 +51,7 @@ where
 
             match &self.data {
                 Vector::Inline(inline_vector) => Some(inline_vector[current]),
-                Vector::Heap(heap_vector) => Some(heap_vector[current]),
+                Vector::Heap(large_vector) => Some(large_vector[current]),
             }
         }
     }
@@ -111,7 +111,7 @@ where
 
             match self.data {
                 Vector::Inline(inline_vector) => Some(&inline_vector[current]),
-                Vector::Heap(heap_vector) => Some(&heap_vector[current]),
+                Vector::Heap(large_vector) => Some(&large_vector[current]),
             }
         }
     }
@@ -158,8 +158,8 @@ where
                     let ptr = inline_vector.data.as_mut_ptr();
                     return Some(unsafe { &mut *ptr.add(current) });
                 }
-                Vector::Heap(heap_vector) => {
-                    let ptr = heap_vector.data.as_mut_ptr();
+                Vector::Heap(large_vector) => {
+                    let ptr = large_vector.data.as_mut_ptr();
                     return Some(unsafe { &mut *ptr.add(current) });
                 }
             }
@@ -191,7 +191,7 @@ where
                 collector.push(item);
             }
 
-            Vector::Heap(HeapVector::new(collector))
+            Vector::Heap(LargeVector::new(collector))
         }
     }
 }

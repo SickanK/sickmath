@@ -11,13 +11,13 @@ use std::ops::Index;
 use std::{fmt::Debug, ops::IndexMut};
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct HeapVector<T, const N: usize> {
+pub struct LargeVector<T, const N: usize> {
     pub data: Vec<T>,
 }
 
-impl<T, const N: usize> HeapVector<T, N> {
+impl<T, const N: usize> LargeVector<T, N> {
     pub fn new(data: impl IntoVec<T, N>) -> Self {
-        HeapVector {
+        LargeVector {
             data: data.into_vec(),
         }
     }
@@ -34,19 +34,19 @@ impl<T, const N: usize> HeapVector<T, N> {
             random_data.push(random_num)
         }
 
-        HeapVector { data: random_data }
+        LargeVector { data: random_data }
     }
 }
 
-impl<T, const N: usize> Default for HeapVector<T, N> {
+impl<T, const N: usize> Default for LargeVector<T, N> {
     fn default() -> Self {
-        HeapVector {
+        LargeVector {
             data: Vec::with_capacity(N),
         }
     }
 }
 
-impl<T, const N: usize> Index<usize> for HeapVector<T, N> {
+impl<T, const N: usize> Index<usize> for LargeVector<T, N> {
     type Output = T;
 
     fn index(&self, idx: usize) -> &Self::Output {
@@ -54,13 +54,13 @@ impl<T, const N: usize> Index<usize> for HeapVector<T, N> {
     }
 }
 
-impl<T, const N: usize> IndexMut<usize> for HeapVector<T, N> {
+impl<T, const N: usize> IndexMut<usize> for LargeVector<T, N> {
     fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
         &mut self.data[idx]
     }
 }
 
-impl<T, const N: usize> HeapVector<T, N>
+impl<T, const N: usize> LargeVector<T, N>
 where
     T: Clone,
 {

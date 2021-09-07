@@ -8,9 +8,9 @@ use num::{FromPrimitive, ToPrimitive};
 
 use crate::{math_vector::MathVector, matrix::Matrix};
 
-use super::HeapVector;
+use super::LargeVector;
 
-impl<T, const N: usize> MathVector<T, N> for HeapVector<T, N>
+impl<T, const N: usize> MathVector<T, N> for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -31,7 +31,7 @@ where
             scaled_vec.push(*num * FromPrimitive::from_isize(scalar).expect("Expected isize"));
         }
 
-        HeapVector { data: scaled_vec }
+        LargeVector { data: scaled_vec }
     }
 
     fn scalar_mut(&mut self, scalar: isize) {
@@ -57,7 +57,7 @@ where
             added_vec.push(self.data[idx] + rhs[idx]);
         }
 
-        HeapVector { data: added_vec }
+        LargeVector { data: added_vec }
     }
 
     fn add_vector_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
@@ -73,7 +73,7 @@ where
             subtracted_vec.push(self.data[idx] - rhs[idx]);
         }
 
-        HeapVector {
+        LargeVector {
             data: subtracted_vec,
         }
     }
@@ -91,7 +91,7 @@ where
             multiplied_vec.push(self.data[idx] * rhs[idx]);
         }
 
-        HeapVector {
+        LargeVector {
             data: multiplied_vec,
         }
     }
@@ -113,7 +113,7 @@ where
         crossed_vec.push(self.data[2] * rhs[0] - self.data[0] * rhs[2]);
         crossed_vec.push(self.data[0] * rhs[1] - self.data[1] * rhs[0]);
 
-        HeapVector { data: crossed_vec }
+        LargeVector { data: crossed_vec }
     }
 
     fn cross_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
@@ -171,197 +171,200 @@ mod tests {
     use super::*;
 
     #[test]
-    fn heap_vector_scalar() {
-        let heap_vector = HeapVector {
+    fn large_vector_scalar() {
+        let large_vector = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let scaled_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let scaled_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![3, 6, 9, 12],
         };
-        assert_eq!(heap_vector.scalar(3), scaled_heap_vector);
+        assert_eq!(large_vector.scalar(3), scaled_large_vector);
     }
 
     #[test]
-    fn heap_vector_scalar_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_scalar_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        heap_vector.scalar_mut(3);
+        large_vector.scalar_mut(3);
 
-        let scaled_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let scaled_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![3, 6, 9, 12],
         };
-        assert_eq!(heap_vector, scaled_heap_vector);
+        assert_eq!(large_vector, scaled_large_vector);
     }
 
     #[test]
-    fn heap_vector_dot() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_dot() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        assert_eq!(heap_vector_1.dot(heap_vector_2), 70);
+        assert_eq!(large_vector_1.dot(large_vector_2), 70);
     }
 
     #[test]
-    fn heap_vector_add_vector() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_add_vector() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let added_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![6, 8, 10, 12],
-        };
-
-        assert_eq!(heap_vector_1.add_vector(heap_vector_2), added_heap_vector);
-    }
-
-    #[test]
-    fn heap_vector_add_vector_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![1, 2, 3, 4],
-        };
-
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
-            data: vec![5, 6, 7, 8],
-        };
-
-        heap_vector.add_vector_mut(heap_vector_2);
-
-        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![6, 8, 10, 12],
-        };
-        assert_eq!(heap_vector, added_heap_vector);
-    }
-
-    #[test]
-    fn heap_vector_sub_vector() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
-            data: vec![5, 6, 7, 8],
-        };
-
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
-            data: vec![1, 2, 3, 4],
-        };
-
-        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![4, 4, 4, 4],
         };
 
         assert_eq!(
-            heap_vector_1.sub_vector(heap_vector_2),
-            subtracted_heap_vector
+            large_vector_1.add_vector(large_vector_2),
+            added_large_vector
         );
     }
 
     #[test]
-    fn heap_vector_sub_vector_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![5, 6, 7, 8],
-        };
-
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_add_vector_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        heap_vector.sub_vector_mut(heap_vector_2);
-
-        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![4, 4, 4, 4],
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
+            data: vec![5, 6, 7, 8],
         };
-        assert_eq!(heap_vector, subtracted_heap_vector);
+
+        large_vector.add_vector_mut(large_vector_2);
+
+        let added_large_vector: LargeVector<u8, 4> = LargeVector {
+            data: vec![6, 8, 10, 12],
+        };
+        assert_eq!(large_vector, added_large_vector);
     }
 
     #[test]
-    fn heap_vector_entrywise() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
-            data: vec![1, 2, 3, 4],
-        };
-
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_sub_vector() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![5, 12, 21, 32],
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let subtracted_large_vector: LargeVector<u8, 4> = LargeVector {
+            data: vec![4, 4, 4, 4],
         };
 
         assert_eq!(
-            heap_vector_1.entrywise(heap_vector_2),
-            multiplied_heap_vector
+            large_vector_1.sub_vector(large_vector_2),
+            subtracted_large_vector
         );
     }
 
     #[test]
-    fn heap_vector_entrywise_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
-            data: vec![1, 2, 3, 4],
-        };
-
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_sub_vector_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        heap_vector.entrywise_mut(heap_vector_2);
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
+            data: vec![1, 2, 3, 4],
+        };
 
-        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+        large_vector.sub_vector_mut(large_vector_2);
+
+        let subtracted_large_vector: LargeVector<u8, 4> = LargeVector {
+            data: vec![4, 4, 4, 4],
+        };
+        assert_eq!(large_vector, subtracted_large_vector);
+    }
+
+    #[test]
+    fn large_vector_entrywise() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        let multiplied_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 12, 21, 32],
         };
-        assert_eq!(heap_vector, multiplied_heap_vector);
+
+        assert_eq!(
+            large_vector_1.entrywise(large_vector_2),
+            multiplied_large_vector
+        );
     }
 
     #[test]
-    fn heap_vector_cross() {
-        let heap_vector_1: HeapVector<i8, 3> = HeapVector {
+    fn large_vector_entrywise_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
+            data: vec![1, 2, 3, 4],
+        };
+
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
+            data: vec![5, 6, 7, 8],
+        };
+
+        large_vector.entrywise_mut(large_vector_2);
+
+        let multiplied_large_vector: LargeVector<u8, 4> = LargeVector {
+            data: vec![5, 12, 21, 32],
+        };
+        assert_eq!(large_vector, multiplied_large_vector);
+    }
+
+    #[test]
+    fn large_vector_cross() {
+        let large_vector_1: LargeVector<i8, 3> = LargeVector {
             data: vec![1, 2, 3],
         };
 
-        let heap_vector_2: HeapVector<i8, 3> = HeapVector {
+        let large_vector_2: LargeVector<i8, 3> = LargeVector {
             data: vec![4, 5, 6],
         };
 
-        let crossed_heap_vector: HeapVector<i8, 3> = HeapVector {
+        let crossed_large_vector: LargeVector<i8, 3> = LargeVector {
             data: vec![-3, 6, -3],
         };
 
-        assert_eq!(heap_vector_1.cross(heap_vector_2), crossed_heap_vector);
+        assert_eq!(large_vector_1.cross(large_vector_2), crossed_large_vector);
     }
 
     #[test]
-    fn heap_vector_cross_mut() {
-        let mut heap_vector: HeapVector<i8, 3> = HeapVector {
+    fn large_vector_cross_mut() {
+        let mut large_vector: LargeVector<i8, 3> = LargeVector {
             data: vec![1, 2, 3],
         };
 
-        let heap_vector_2: HeapVector<i8, 3> = HeapVector {
+        let large_vector_2: LargeVector<i8, 3> = LargeVector {
             data: vec![4, 5, 6],
         };
 
-        heap_vector.cross_mut(heap_vector_2);
+        large_vector.cross_mut(large_vector_2);
 
-        let crossed_heap_vector: HeapVector<i8, 3> = HeapVector {
+        let crossed_large_vector: LargeVector<i8, 3> = LargeVector {
             data: vec![-3, 6, -3],
         };
-        assert_eq!(heap_vector, crossed_heap_vector);
+        assert_eq!(large_vector, crossed_large_vector);
     }
 
     #[test]
-    fn heap_vector_tensor_prod() {
-        let heap_vector_1: HeapVector<u8, 3> = HeapVector {
+    fn large_vector_tensor_prod() {
+        let large_vector_1: LargeVector<u8, 3> = LargeVector {
             data: vec![1, 2, 3],
         };
 
-        let heap_vector_2: HeapVector<u8, 3> = HeapVector {
+        let large_vector_2: LargeVector<u8, 3> = LargeVector {
             data: vec![4, 5, 6],
         };
 
@@ -369,21 +372,21 @@ mod tests {
 
         let tensor_product: Matrix<u8, 3, 3> = Matrix::new(crossed_matrix_data);
 
-        assert_eq!(heap_vector_1.tensor_prod(heap_vector_2), tensor_product);
+        assert_eq!(large_vector_1.tensor_prod(large_vector_2), tensor_product);
     }
 
     #[test]
-    fn heap_vector_magnitude() {
-        let heap_vector: HeapVector<i8, 2> = HeapVector { data: vec![2, 2] };
+    fn large_vector_magnitude() {
+        let large_vector: LargeVector<i8, 2> = LargeVector { data: vec![2, 2] };
 
-        assert_eq!(heap_vector.magnitude(), 2);
+        assert_eq!(large_vector.magnitude(), 2);
     }
     #[test]
-    fn heap_vector_sum() {
-        let heap_vector: HeapVector<i8, 3> = HeapVector {
+    fn large_vector_sum() {
+        let large_vector: LargeVector<i8, 3> = LargeVector {
             data: vec![1, 2, 3],
         };
 
-        assert_eq!(heap_vector.sum(), 6);
+        assert_eq!(large_vector.sum(), 6);
     }
 }

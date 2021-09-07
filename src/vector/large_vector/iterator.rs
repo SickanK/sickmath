@@ -1,6 +1,6 @@
-use super::HeapVector;
+use super::LargeVector;
 use std::iter::FromIterator;
-impl<'a, T, const N: usize> HeapVector<T, N> {
+impl<'a, T, const N: usize> LargeVector<T, N> {
     pub fn into_iter(self) -> IntoIter<T, N> {
         IntoIter {
             data: self,
@@ -27,7 +27,7 @@ impl<'a, T, const N: usize> HeapVector<T, N> {
 }
 
 pub struct IntoIter<T, const N: usize> {
-    data: HeapVector<T, N>,
+    data: LargeVector<T, N>,
     current: usize,
     end: usize,
 }
@@ -51,7 +51,7 @@ where
     }
 }
 
-impl<T, const N: usize> IntoIterator for HeapVector<T, N>
+impl<T, const N: usize> IntoIterator for LargeVector<T, N>
 where
     T: Copy,
 {
@@ -68,12 +68,12 @@ where
 }
 
 pub struct Iter<'a, T, const N: usize> {
-    data: &'a HeapVector<T, N>,
+    data: &'a LargeVector<T, N>,
     current: usize,
     end: usize,
 }
 
-impl<'a, T, const N: usize> IntoIterator for &'a HeapVector<T, N>
+impl<'a, T, const N: usize> IntoIterator for &'a LargeVector<T, N>
 where
     T: Copy,
 {
@@ -109,12 +109,12 @@ where
 }
 
 pub struct IterMut<'a, T, const N: usize> {
-    data: &'a mut HeapVector<T, N>,
+    data: &'a mut LargeVector<T, N>,
     current: usize,
     end: usize,
 }
 
-impl<'a, T, const N: usize> IntoIterator for &'a mut HeapVector<T, N>
+impl<'a, T, const N: usize> IntoIterator for &'a mut LargeVector<T, N>
 where
     T: Copy,
 {
@@ -150,17 +150,17 @@ where
     }
 }
 
-impl<T, const N: usize> FromIterator<T> for HeapVector<T, N>
+impl<T, const N: usize> FromIterator<T> for LargeVector<T, N>
 where
     T: Default + Copy,
 {
-    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> HeapVector<T, N> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> LargeVector<T, N> {
         let mut collector: Vec<T> = Vec::with_capacity(N);
 
         for item in iter {
             collector.push(item);
         }
 
-        HeapVector { data: collector }
+        LargeVector { data: collector }
     }
 }

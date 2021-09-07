@@ -7,9 +7,9 @@ use num::{FromPrimitive, ToPrimitive};
 
 use crate::math_vector::MathVector;
 
-use super::HeapVector;
+use super::LargeVector;
 
-impl<T, const N: usize> Add for HeapVector<T, N>
+impl<T, const N: usize> Add for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -30,7 +30,7 @@ where
     }
 }
 
-impl<T, const N: usize> AddAssign for HeapVector<T, N>
+impl<T, const N: usize> AddAssign for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -49,7 +49,7 @@ where
     }
 }
 
-impl<T, const N: usize> Sub for HeapVector<T, N>
+impl<T, const N: usize> Sub for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -70,7 +70,7 @@ where
     }
 }
 
-impl<T, const N: usize> SubAssign for HeapVector<T, N>
+impl<T, const N: usize> SubAssign for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -89,7 +89,7 @@ where
     }
 }
 
-impl<T, const N: usize> Mul for HeapVector<T, N>
+impl<T, const N: usize> Mul for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -110,7 +110,7 @@ where
     }
 }
 
-impl<T, const N: usize> MulAssign for HeapVector<T, N>
+impl<T, const N: usize> MulAssign for LargeVector<T, N>
 where
     T: Default
         + Copy
@@ -134,107 +134,107 @@ mod tests {
     use super::*;
 
     #[test]
-    fn heap_vector_add_vector() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_add_vector() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let added_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![6, 8, 10, 12],
         };
 
-        assert_eq!(heap_vector_1 + heap_vector_2, added_heap_vector);
+        assert_eq!(large_vector_1 + large_vector_2, added_large_vector);
     }
 
     #[test]
-    fn heap_vector_add_vector_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_add_vector_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        heap_vector += heap_vector_2;
+        large_vector += large_vector_2;
 
-        let added_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let added_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![6, 8, 10, 12],
         };
-        assert_eq!(heap_vector, added_heap_vector);
+        assert_eq!(large_vector, added_large_vector);
     }
 
     #[test]
-    fn heap_vector_sub_vector() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_sub_vector() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let subtracted_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![4, 4, 4, 4],
         };
 
-        assert_eq!(heap_vector_1 - heap_vector_2, subtracted_heap_vector);
+        assert_eq!(large_vector_1 - large_vector_2, subtracted_large_vector);
     }
 
     #[test]
-    fn heap_vector_sub_vector_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_sub_vector_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        heap_vector -= heap_vector_2;
+        large_vector -= large_vector_2;
 
-        let subtracted_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let subtracted_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![4, 4, 4, 4],
         };
-        assert_eq!(heap_vector, subtracted_heap_vector);
+        assert_eq!(large_vector, subtracted_large_vector);
     }
 
     #[test]
-    fn heap_vector_entrywise() {
-        let heap_vector_1: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_entrywise() {
+        let large_vector_1: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let multiplied_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 12, 21, 32],
         };
 
-        assert_eq!(heap_vector_1 * heap_vector_2, multiplied_heap_vector);
+        assert_eq!(large_vector_1 * large_vector_2, multiplied_large_vector);
     }
 
     #[test]
-    fn heap_vector_entrywise_mut() {
-        let mut heap_vector: HeapVector<u8, 4> = HeapVector {
+    fn large_vector_entrywise_mut() {
+        let mut large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![1, 2, 3, 4],
         };
 
-        let heap_vector_2: HeapVector<u8, 4> = HeapVector {
+        let large_vector_2: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 6, 7, 8],
         };
 
-        heap_vector *= heap_vector_2;
+        large_vector *= large_vector_2;
 
-        let multiplied_heap_vector: HeapVector<u8, 4> = HeapVector {
+        let multiplied_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 12, 21, 32],
         };
-        assert_eq!(heap_vector, multiplied_heap_vector);
+        assert_eq!(large_vector, multiplied_large_vector);
     }
 }
