@@ -1,3 +1,4 @@
+use crate::vector::large_vector::into_vec::IntoVec;
 use std::convert::TryInto;
 
 use crate::vector::large_vector::LargeVector;
