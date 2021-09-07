@@ -1,4 +1,4 @@
-use crate::vector::{inline_vector::InlineVector, large_vector::LargeVector};
+use crate::vector::{large_vector::LargeVector, small_vector::SmallVector};
 
 use super::Vector;
 
@@ -50,7 +50,7 @@ where
             self.current += 1;
 
             match &self.data {
-                Vector::Inline(inline_vector) => Some(inline_vector[current]),
+                Vector::Inline(small_vector) => Some(small_vector[current]),
                 Vector::Heap(large_vector) => Some(large_vector[current]),
             }
         }
@@ -110,7 +110,7 @@ where
             self.current += 1;
 
             match self.data {
-                Vector::Inline(inline_vector) => Some(&inline_vector[current]),
+                Vector::Inline(small_vector) => Some(&small_vector[current]),
                 Vector::Heap(large_vector) => Some(&large_vector[current]),
             }
         }
@@ -154,8 +154,8 @@ where
             self.current += 1;
 
             match self.data {
-                Vector::Inline(inline_vector) => {
-                    let ptr = inline_vector.data.as_mut_ptr();
+                Vector::Inline(small_vector) => {
+                    let ptr = small_vector.data.as_mut_ptr();
                     return Some(unsafe { &mut *ptr.add(current) });
                 }
                 Vector::Heap(large_vector) => {
@@ -183,7 +183,7 @@ where
                 idx += 1;
             }
 
-            Vector::Inline(InlineVector::new(collector))
+            Vector::Inline(SmallVector::new(collector))
         } else {
             let mut collector: Vec<T> = Vec::with_capacity(N);
 

@@ -3,19 +3,19 @@ use std::ops::{Index, IndexMut};
 use rand::{distributions::Standard, prelude::Distribution};
 
 use crate::vector::{
-    inline_vector::{into_array::IntoArray, InlineVector},
     large_vector::{into_vec::IntoVec, LargeVector},
+    small_vector::{into_array::IntoArray, SmallVector},
 };
 
-pub mod inline_vector;
 pub mod iterator;
 pub mod large_vector;
 pub mod math;
 pub mod math_ops;
+pub mod small_vector;
 
 /// A mathematical vector that can either be allocated on the heap or stack.
 ///
-/// A `Vector` is either an InlineVector or a LargeVector.
+/// A `Vector` is either an SmallVector or a LargeVector.
 /// The interface for the type as a whole is a bunch of methods that just match on
 /// the enum variant and then call the same method on the inner vec.
 ///
@@ -54,7 +54,7 @@ pub mod math_ops;
 /// ```
 #[derive(Debug, Clone)]
 pub enum Vector<T, const N: usize> {
-    Inline(InlineVector<T, N>),
+    Inline(SmallVector<T, N>),
     Heap(LargeVector<T, N>),
 }
 
@@ -68,7 +68,7 @@ where
     /// let vector: Vector<u8, 3> = Vector::new([1, 2, 3]);
     /// ```
     pub fn new(data: impl IntoArray<T, N>) -> Self {
-        Self::Inline(InlineVector::new(data))
+        Self::Inline(SmallVector::new(data))
     }
 
     /// Creates a new random inline vector
@@ -82,7 +82,7 @@ where
         Standard: Distribution<T>,
     {
         if N < 5001 {
-            Self::Inline(InlineVector::new_random())
+            Self::Inline(SmallVector::new_random())
         } else {
             Self::Heap(LargeVector::new_random())
         }
@@ -115,7 +115,7 @@ where
     T: Default + Copy,
 {
     fn default() -> Self {
-        Self::Inline(InlineVector::default())
+        Self::Inline(SmallVector::default())
     }
 }
 
@@ -124,7 +124,7 @@ impl<T, const N: usize> Index<usize> for Vector<T, N> {
 
     fn index(&self, idx: usize) -> &Self::Output {
         match self {
-            Self::Inline(inline_vector) => &inline_vector[idx],
+            Self::Inline(small_vector) => &small_vector[idx],
             Self::Heap(large_vector) => &large_vector[idx],
         }
     }
@@ -133,7 +133,7 @@ impl<T, const N: usize> Index<usize> for Vector<T, N> {
 impl<T, const N: usize> IndexMut<usize> for Vector<T, N> {
     fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
         match self {
-            Self::Inline(inline_vector) => &mut inline_vector[idx],
+            Self::Inline(small_vector) => &mut small_vector[idx],
             Self::Heap(large_vector) => &mut large_vector[idx],
         }
     }

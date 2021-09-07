@@ -6,9 +6,9 @@ use std::{
 use crate::{math_vector::MathVector, matrix::Matrix};
 use num::{integer::Roots, FromPrimitive, ToPrimitive};
 
-use super::InlineVector;
+use super::SmallVector;
 
-impl<T, const N: usize> MathVector<T, N> for InlineVector<T, N>
+impl<T, const N: usize> MathVector<T, N> for SmallVector<T, N>
 where
     T: Default
         + Copy
@@ -30,7 +30,7 @@ where
             scaled_array[idx] = *num * scalar;
         }
 
-        InlineVector { data: scaled_array }
+        SmallVector { data: scaled_array }
     }
 
     fn scalar_mut(&mut self, scalar: isize) {
@@ -57,7 +57,7 @@ where
             *num = self.data[idx] + rhs[idx];
         }
 
-        InlineVector { data: added_array }
+        SmallVector { data: added_array }
     }
 
     fn add_vector_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) {
@@ -73,7 +73,7 @@ where
             *num = self.data[idx] - rhs[idx];
         }
 
-        InlineVector {
+        SmallVector {
             data: subtracted_array,
         }
     }
@@ -91,7 +91,7 @@ where
             *num = self.data[idx] * rhs[idx];
         }
 
-        InlineVector {
+        SmallVector {
             data: multiplied_array,
         }
     }
@@ -113,7 +113,7 @@ where
         crossed_array[1] = self.data[2] * rhs[0] - self.data[0] * rhs[2];
         crossed_array[2] = self.data[0] * rhs[1] - self.data[1] * rhs[0];
 
-        InlineVector {
+        SmallVector {
             data: crossed_array,
         }
     }
@@ -173,173 +173,170 @@ mod tests {
     use super::*;
 
     #[test]
-    fn inline_vector_scalar() {
-        let inline_vector = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_scalar() {
+        let small_vector = SmallVector { data: [1, 2, 3, 4] };
 
-        let scaled_inline_vector: InlineVector<u8, 4> = InlineVector {
+        let scaled_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [3, 6, 9, 12],
         };
 
-        assert_eq!(inline_vector.scalar(3), scaled_inline_vector);
+        assert_eq!(small_vector.scalar(3), scaled_small_vector);
     }
 
     #[test]
-    fn inline_vector_scalar_mut() {
-        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_scalar_mut() {
+        let mut small_vector: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        inline_vector.scalar_mut(3);
+        small_vector.scalar_mut(3);
 
-        let scaled_inline_vector: InlineVector<u8, 4> = InlineVector {
+        let scaled_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [3, 6, 9, 12],
         };
 
-        assert_eq!(inline_vector, scaled_inline_vector);
+        assert_eq!(small_vector, scaled_small_vector);
     }
 
     #[test]
-    fn inline_vector_dot() {
-        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_dot() {
+        let small_vector_1: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        assert_eq!(inline_vector_1.dot(inline_vector_2), 70);
+        assert_eq!(small_vector_1.dot(small_vector_2), 70);
     }
 
     #[test]
-    fn inline_vector_add_vector() {
-        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_add_vector() {
+        let small_vector_1: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        let added_inline_vector: InlineVector<u8, 4> = InlineVector {
+        let added_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [6, 8, 10, 12],
         };
 
         assert_eq!(
-            inline_vector_1.add_vector(inline_vector_2),
-            added_inline_vector
+            small_vector_1.add_vector(small_vector_2),
+            added_small_vector
         );
     }
 
     #[test]
-    fn inline_vector_add_vector_mut() {
-        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_add_vector_mut() {
+        let mut small_vector: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        inline_vector.add_vector_mut(inline_vector_2);
+        small_vector.add_vector_mut(small_vector_2);
 
-        let added_inline_vector: InlineVector<u8, 4> = InlineVector {
+        let added_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [6, 8, 10, 12],
         };
-        assert_eq!(inline_vector, added_inline_vector);
+        assert_eq!(small_vector, added_small_vector);
     }
 
     #[test]
-    fn inline_vector_sub_vector() {
-        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+    fn small_vector_sub_vector() {
+        let small_vector_1: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        let subtracted_inline_vector: InlineVector<u8, 4> = InlineVector { data: [4, 4, 4, 4] };
+        let subtracted_small_vector: SmallVector<u8, 4> = SmallVector { data: [4, 4, 4, 4] };
 
         assert_eq!(
-            inline_vector_1.sub_vector(inline_vector_2),
-            subtracted_inline_vector
+            small_vector_1.sub_vector(small_vector_2),
+            subtracted_small_vector
         );
     }
 
     #[test]
-    fn inline_vector_sub_vector_mut() {
-        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+    fn small_vector_sub_vector_mut() {
+        let mut small_vector: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        inline_vector.sub_vector_mut(inline_vector_2);
+        small_vector.sub_vector_mut(small_vector_2);
 
-        let subtracted_inline_vector: InlineVector<u8, 4> = InlineVector { data: [4, 4, 4, 4] };
-        assert_eq!(inline_vector, subtracted_inline_vector);
+        let subtracted_small_vector: SmallVector<u8, 4> = SmallVector { data: [4, 4, 4, 4] };
+        assert_eq!(small_vector, subtracted_small_vector);
     }
 
     #[test]
-    fn inline_vector_entrywise() {
-        let inline_vector_1: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_entrywise() {
+        let small_vector_1: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        let multiplied_inline_vector: InlineVector<u8, 4> = InlineVector {
+        let multiplied_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [5, 12, 21, 32],
         };
 
         assert_eq!(
-            inline_vector_1.entrywise(inline_vector_2),
-            multiplied_inline_vector
+            small_vector_1.entrywise(small_vector_2),
+            multiplied_small_vector
         );
     }
 
     #[test]
-    fn inline_vector_entrywise_mut() {
-        let mut inline_vector: InlineVector<u8, 4> = InlineVector { data: [1, 2, 3, 4] };
+    fn small_vector_entrywise_mut() {
+        let mut small_vector: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        let inline_vector_2: InlineVector<u8, 4> = InlineVector { data: [5, 6, 7, 8] };
+        let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        inline_vector.entrywise_mut(inline_vector_2);
+        small_vector.entrywise_mut(small_vector_2);
 
-        let multiplied_inline_vector: InlineVector<u8, 4> = InlineVector {
+        let multiplied_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [5, 12, 21, 32],
         };
-        assert_eq!(inline_vector, multiplied_inline_vector);
+        assert_eq!(small_vector, multiplied_small_vector);
     }
 
     #[test]
-    fn inline_vector_cross() {
-        let inline_vector_1: InlineVector<i8, 3> = InlineVector { data: [1, 2, 3] };
+    fn small_vector_cross() {
+        let small_vector_1: SmallVector<i8, 3> = SmallVector { data: [1, 2, 3] };
 
-        let inline_vector_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
+        let small_vector_2: SmallVector<i8, 3> = SmallVector { data: [4, 5, 6] };
 
-        let crossed_inline_vector: InlineVector<i8, 3> = InlineVector { data: [-3, 6, -3] };
+        let crossed_small_vector: SmallVector<i8, 3> = SmallVector { data: [-3, 6, -3] };
 
-        assert_eq!(
-            inline_vector_1.cross(inline_vector_2),
-            crossed_inline_vector
-        );
+        assert_eq!(small_vector_1.cross(small_vector_2), crossed_small_vector);
     }
 
     #[test]
-    fn inline_vector_cross_mut() {
-        let mut inline_vector: InlineVector<i8, 3> = InlineVector { data: [1, 2, 3] };
+    fn small_vector_cross_mut() {
+        let mut small_vector: SmallVector<i8, 3> = SmallVector { data: [1, 2, 3] };
 
-        let inline_vector_2: InlineVector<i8, 3> = InlineVector { data: [4, 5, 6] };
+        let small_vector_2: SmallVector<i8, 3> = SmallVector { data: [4, 5, 6] };
 
-        inline_vector.cross_mut(inline_vector_2);
+        small_vector.cross_mut(small_vector_2);
 
-        let crossed_inline_vector: InlineVector<i8, 3> = InlineVector { data: [-3, 6, -3] };
-        assert_eq!(inline_vector, crossed_inline_vector);
+        let crossed_small_vector: SmallVector<i8, 3> = SmallVector { data: [-3, 6, -3] };
+        assert_eq!(small_vector, crossed_small_vector);
     }
 
     #[test]
-    fn inline_vector_tensor_prod() {
-        let inline_vector_1: InlineVector<u8, 3> = InlineVector { data: [1, 2, 3] };
+    fn small_vector_tensor_prod() {
+        let small_vector_1: SmallVector<u8, 3> = SmallVector { data: [1, 2, 3] };
 
-        let inline_vector_2: InlineVector<u8, 3> = InlineVector { data: [4, 5, 6] };
+        let small_vector_2: SmallVector<u8, 3> = SmallVector { data: [4, 5, 6] };
 
         let crossed_matrix_data = [[4, 5, 6], [8, 10, 12], [12, 15, 18]];
 
         let tensor_product: Matrix<u8, 3, 3> = Matrix::new(crossed_matrix_data);
 
-        assert_eq!(inline_vector_1.tensor_prod(inline_vector_2), tensor_product);
+        assert_eq!(small_vector_1.tensor_prod(small_vector_2), tensor_product);
     }
 
     #[test]
-    fn inline_vector_magnitude() {
-        let inline_vector: InlineVector<i8, 2> = InlineVector { data: [2, 2] };
+    fn small_vector_magnitude() {
+        let small_vector: SmallVector<i8, 2> = SmallVector { data: [2, 2] };
 
-        assert_eq!(inline_vector.magnitude(), 2);
+        assert_eq!(small_vector.magnitude(), 2);
     }
     #[test]
-    fn inline_vector_sum() {
-        let inline_vector: InlineVector<i8, 3> = InlineVector { data: [1, 2, 3] };
+    fn small_vector_sum() {
+        let small_vector: SmallVector<i8, 3> = SmallVector { data: [1, 2, 3] };
 
-        assert_eq!(inline_vector.sum(), 6);
+        assert_eq!(small_vector.sum(), 6);
     }
 }

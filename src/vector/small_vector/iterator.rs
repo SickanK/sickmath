@@ -1,7 +1,7 @@
-use super::InlineVector;
+use super::SmallVector;
 use std::iter::FromIterator;
 
-impl<'a, T, const N: usize> InlineVector<T, N> {
+impl<'a, T, const N: usize> SmallVector<T, N> {
     pub fn into_iter(self) -> IntoIter<T, N> {
         IntoIter {
             data: self,
@@ -28,7 +28,7 @@ impl<'a, T, const N: usize> InlineVector<T, N> {
 }
 
 pub struct IntoIter<T, const N: usize> {
-    data: InlineVector<T, N>,
+    data: SmallVector<T, N>,
     current: usize,
     end: usize,
 }
@@ -52,7 +52,7 @@ where
     }
 }
 
-impl<T, const N: usize> IntoIterator for InlineVector<T, N>
+impl<T, const N: usize> IntoIterator for SmallVector<T, N>
 where
     T: Copy,
 {
@@ -69,12 +69,12 @@ where
 }
 
 pub struct Iter<'a, T, const N: usize> {
-    data: &'a InlineVector<T, N>,
+    data: &'a SmallVector<T, N>,
     current: usize,
     end: usize,
 }
 
-impl<'a, T, const N: usize> IntoIterator for &'a InlineVector<T, N>
+impl<'a, T, const N: usize> IntoIterator for &'a SmallVector<T, N>
 where
     T: Copy,
 {
@@ -110,12 +110,12 @@ where
 }
 
 pub struct IterMut<'a, T, const N: usize> {
-    data: &'a mut InlineVector<T, N>,
+    data: &'a mut SmallVector<T, N>,
     current: usize,
     end: usize,
 }
 
-impl<'a, T, const N: usize> IntoIterator for &'a mut InlineVector<T, N>
+impl<'a, T, const N: usize> IntoIterator for &'a mut SmallVector<T, N>
 where
     T: Copy,
 {
@@ -151,11 +151,11 @@ where
     }
 }
 
-impl<T, const N: usize> FromIterator<T> for InlineVector<T, N>
+impl<T, const N: usize> FromIterator<T> for SmallVector<T, N>
 where
     T: Default + Copy,
 {
-    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> InlineVector<T, N> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> SmallVector<T, N> {
         let mut collector: [T; N] = [T::default(); N];
 
         let mut idx = 0;
@@ -164,6 +164,6 @@ where
             idx += 1;
         }
 
-        InlineVector { data: collector }
+        SmallVector { data: collector }
     }
 }

@@ -1,4 +1,4 @@
-use crate::vector::inline_vector::InlineVector;
+use crate::vector::small_vector::SmallVector;
 
 pub trait IntoVec<T, const N: usize> {
     fn into_vec(self) -> Vec<T>;
@@ -24,7 +24,7 @@ where
     }
 }
 
-impl<T, const N: usize> IntoVec<T, N> for InlineVector<T, N>
+impl<T, const N: usize> IntoVec<T, N> for SmallVector<T, N>
 where
     T: Copy,
 {
@@ -52,9 +52,9 @@ mod tests {
     }
 
     #[test]
-    fn into_vec_from_inline_vector() {
-        let inline_vector = InlineVector { data: [1, 2, 3, 4] };
+    fn into_vec_from_small_vector() {
+        let small_vector = SmallVector { data: [1, 2, 3, 4] };
 
-        assert_eq!(inline_vector.into_vec(), vec![1, 2, 3, 4]);
+        assert_eq!(small_vector.into_vec(), vec![1, 2, 3, 4]);
     }
 }

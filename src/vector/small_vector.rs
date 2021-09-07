@@ -10,13 +10,13 @@ use self::into_array::IntoArray;
 use rand::{distributions::Standard, prelude::Distribution, Rng};
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct InlineVector<T, const N: usize> {
+pub struct SmallVector<T, const N: usize> {
     pub data: [T; N],
 }
 
-impl<T, const N: usize> InlineVector<T, N> {
+impl<T, const N: usize> SmallVector<T, N> {
     pub fn new(data: impl IntoArray<T, N>) -> Self {
-        InlineVector {
+        SmallVector {
             data: data.into_array(),
         }
     }
@@ -34,22 +34,22 @@ impl<T, const N: usize> InlineVector<T, N> {
             *num = random_num;
         }
 
-        InlineVector { data: random_data }
+        SmallVector { data: random_data }
     }
 }
 
-impl<T, const N: usize> Default for InlineVector<T, N>
+impl<T, const N: usize> Default for SmallVector<T, N>
 where
     T: Default + Copy,
 {
     fn default() -> Self {
-        InlineVector {
+        SmallVector {
             data: [T::default(); N],
         }
     }
 }
 
-impl<T, const N: usize> Index<usize> for InlineVector<T, N> {
+impl<T, const N: usize> Index<usize> for SmallVector<T, N> {
     type Output = T;
 
     fn index(&self, idx: usize) -> &Self::Output {
@@ -57,13 +57,13 @@ impl<T, const N: usize> Index<usize> for InlineVector<T, N> {
     }
 }
 
-impl<T, const N: usize> IndexMut<usize> for InlineVector<T, N> {
+impl<T, const N: usize> IndexMut<usize> for SmallVector<T, N> {
     fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
         &mut self.data[idx]
     }
 }
 
-impl<T, const N: usize> InlineVector<T, N>
+impl<T, const N: usize> SmallVector<T, N>
 where
     T: Clone,
 {
@@ -72,13 +72,13 @@ where
     }
 }
 
-impl<T, const N: usize> InlineVector<T, N> {
+impl<T, const N: usize> SmallVector<T, N> {
     pub fn to_array(self) -> [T; N] {
         self.data
     }
 }
 
-impl<T, const N: usize> Deref for InlineVector<T, N> {
+impl<T, const N: usize> Deref for SmallVector<T, N> {
     type Target = [T; N];
 
     fn deref(&self) -> &Self::Target {
