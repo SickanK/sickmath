@@ -37,63 +37,63 @@ where
         };
     }
 
-    fn dot(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> isize {
+    fn dot(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> isize {
         match self {
             Self::Small(small_vector) => small_vector.dot(rhs),
             Self::Large(large_vector) => large_vector.dot(rhs),
         }
     }
 
-    fn add_vector(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn add_vector(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         match self {
             Self::Small(small_vector) => Vector::Small(small_vector.add_vector(rhs)),
             Self::Large(large_vector) => Vector::Large(large_vector.add_vector(rhs)),
         }
     }
 
-    fn add_vector_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn add_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         match self {
             Self::Small(small_vector) => small_vector.add_vector_mut(rhs),
             Self::Large(large_vector) => large_vector.add_vector_mut(rhs),
         }
     }
 
-    fn sub_vector(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn sub_vector(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         match self {
             Self::Small(small_vector) => Vector::Small(small_vector.sub_vector(rhs)),
             Self::Large(large_vector) => Vector::Large(large_vector.sub_vector(rhs)),
         }
     }
 
-    fn sub_vector_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn sub_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         match self {
             Self::Small(small_vector) => small_vector.sub_vector_mut(rhs),
             Self::Large(large_vector) => large_vector.sub_vector_mut(rhs),
         }
     }
 
-    fn entrywise(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn entrywise(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         match self {
             Self::Small(small_vector) => Vector::Small(small_vector.entrywise(rhs)),
             Self::Large(large_vector) => Vector::Large(large_vector.entrywise(rhs)),
         }
     }
 
-    fn entrywise_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn entrywise_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         match self {
             Self::Small(small_vector) => small_vector.entrywise_mut(rhs),
             Self::Large(large_vector) => large_vector.entrywise_mut(rhs),
         }
     }
 
-    fn cross(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self {
+    fn cross(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self {
         match self {
             Self::Small(small_vector) => Vector::Small(small_vector.cross(rhs)),
             Self::Large(large_vector) => Vector::Large(large_vector.cross(rhs)),
         }
     }
 
-    fn cross_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn cross_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         match self {
             Self::Small(small_vector) => small_vector.cross_mut(rhs),
             Self::Large(large_vector) => large_vector.cross_mut(rhs),
@@ -102,7 +102,7 @@ where
 
     fn tensor_prod<const M: usize>(
         &self,
-        rhs: impl MathVector<T, N> + Index<usize, Output = T>,
+        rhs: &(impl MathVector<T, N> + Index<usize, Output = T>),
     ) -> Matrix<T, M, N> {
         match self {
             Self::Small(small_vector) => small_vector.tensor_prod(rhs),

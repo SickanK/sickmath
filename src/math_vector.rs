@@ -19,36 +19,36 @@ pub trait MathVector<T, const N: usize> {
     fn scalar_mut(&mut self, scalar: isize);
 
     /// Dot product. Will return an `isize`
-    fn dot(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> isize;
+    fn dot(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> isize;
 
     /// Vector addition
-    fn add_vector(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self;
+    fn add_vector(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self;
 
     /// Mutable vector addition
-    fn add_vector_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>);
+    fn add_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>));
 
     /// Vector subtraction
-    fn sub_vector(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self;
+    fn sub_vector(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self;
 
     /// Mutable vector subtraction
-    fn sub_vector_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>);
+    fn sub_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>));
 
     /// Entrywise vector multiplication
-    fn entrywise(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self;
+    fn entrywise(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self;
 
     /// Mutable entrywise vector multiplication
-    fn entrywise_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>);
+    fn entrywise_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>));
 
     /// Cross product. Will panic if vector has a length other than 3
-    fn cross(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self;
+    fn cross(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self;
 
     /// Mutable cross product. Will panic if vector has a length other than 3
-    fn cross_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>);
+    fn cross_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>));
 
     /// Tensor product. Will return a `Matrix` instead of `Self`
     fn tensor_prod<const M: usize>(
         &self,
-        rhs: impl MathVector<T, N> + Index<usize, Output = T>,
+        rhs: &(impl MathVector<T, N> + Index<usize, Output = T>),
     ) -> Matrix<T, M, N>;
 
     /// Magnitude of the vector

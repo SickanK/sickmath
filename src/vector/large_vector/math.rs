@@ -40,7 +40,7 @@ where
         }
     }
 
-    fn dot(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> isize {
+    fn dot(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> isize {
         let mut acc: T = T::default();
 
         for idx in 0..N {
@@ -50,7 +50,7 @@ where
         ToPrimitive::to_isize(&acc).expect("Type of T is not supported")
     }
 
-    fn add_vector(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn add_vector(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         let mut added_vec: Vec<T> = Vec::with_capacity(N);
 
         for idx in 0..N {
@@ -60,13 +60,13 @@ where
         LargeVector { data: added_vec }
     }
 
-    fn add_vector_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn add_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         for (idx, num) in self.data.iter_mut().enumerate() {
             *num += rhs[idx];
         }
     }
 
-    fn sub_vector(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn sub_vector(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         let mut subtracted_vec: Vec<T> = Vec::with_capacity(N);
 
         for idx in 0..N {
@@ -78,13 +78,13 @@ where
         }
     }
 
-    fn sub_vector_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn sub_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         for (idx, num) in self.data.iter_mut().enumerate() {
             *num -= rhs[idx];
         }
     }
 
-    fn entrywise(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn entrywise(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         let mut multiplied_vec: Vec<T> = Vec::with_capacity(N);
 
         for idx in 0..N {
@@ -96,13 +96,13 @@ where
         }
     }
 
-    fn entrywise_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn entrywise_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         for (idx, num) in self.data.iter_mut().enumerate() {
             *num *= rhs[idx];
         }
     }
 
-    fn cross(&self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) -> Self {
+    fn cross(&self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) -> Self {
         if N != 3 {
             panic!("The cross product requires that the length of both vectors must be 3");
         }
@@ -116,7 +116,7 @@ where
         LargeVector { data: crossed_vec }
     }
 
-    fn cross_mut(&mut self, rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>) {
+    fn cross_mut(&mut self, rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>)) {
         if N != 3 {
             panic!("The cross product requires that the length of both vectors must be 3");
         }
@@ -129,7 +129,7 @@ where
 
     fn tensor_prod<const M: usize>(
         &self,
-        rhs: impl MathVector<T, N> + std::ops::Index<usize, Output = T>,
+        rhs: &(impl MathVector<T, N> + std::ops::Index<usize, Output = T>),
     ) -> Matrix<T, M, N> {
         let mut tensor_product: Matrix<T, M, N> = Matrix::default();
 
@@ -206,7 +206,7 @@ mod tests {
             data: vec![5, 6, 7, 8],
         };
 
-        assert_eq!(large_vector_1.dot(large_vector_2), 70);
+        assert_eq!(large_vector_1.dot(&large_vector_2), 70);
     }
 
     #[test]
@@ -224,7 +224,7 @@ mod tests {
         };
 
         assert_eq!(
-            large_vector_1.add_vector(large_vector_2),
+            large_vector_1.add_vector(&large_vector_2),
             added_large_vector
         );
     }
@@ -239,7 +239,7 @@ mod tests {
             data: vec![5, 6, 7, 8],
         };
 
-        large_vector.add_vector_mut(large_vector_2);
+        large_vector.add_vector_mut(&large_vector_2);
 
         let added_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![6, 8, 10, 12],
@@ -262,7 +262,7 @@ mod tests {
         };
 
         assert_eq!(
-            large_vector_1.sub_vector(large_vector_2),
+            large_vector_1.sub_vector(&large_vector_2),
             subtracted_large_vector
         );
     }
@@ -277,7 +277,7 @@ mod tests {
             data: vec![1, 2, 3, 4],
         };
 
-        large_vector.sub_vector_mut(large_vector_2);
+        large_vector.sub_vector_mut(&large_vector_2);
 
         let subtracted_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![4, 4, 4, 4],
@@ -300,7 +300,7 @@ mod tests {
         };
 
         assert_eq!(
-            large_vector_1.entrywise(large_vector_2),
+            large_vector_1.entrywise(&large_vector_2),
             multiplied_large_vector
         );
     }
@@ -315,7 +315,7 @@ mod tests {
             data: vec![5, 6, 7, 8],
         };
 
-        large_vector.entrywise_mut(large_vector_2);
+        large_vector.entrywise_mut(&large_vector_2);
 
         let multiplied_large_vector: LargeVector<u8, 4> = LargeVector {
             data: vec![5, 12, 21, 32],
@@ -337,7 +337,7 @@ mod tests {
             data: vec![-3, 6, -3],
         };
 
-        assert_eq!(large_vector_1.cross(large_vector_2), crossed_large_vector);
+        assert_eq!(large_vector_1.cross(&large_vector_2), crossed_large_vector);
     }
 
     #[test]
@@ -350,7 +350,7 @@ mod tests {
             data: vec![4, 5, 6],
         };
 
-        large_vector.cross_mut(large_vector_2);
+        large_vector.cross_mut(&large_vector_2);
 
         let crossed_large_vector: LargeVector<i8, 3> = LargeVector {
             data: vec![-3, 6, -3],
@@ -372,7 +372,7 @@ mod tests {
 
         let tensor_product: Matrix<u8, 3, 3> = Matrix::new(crossed_matrix_data);
 
-        assert_eq!(large_vector_1.tensor_prod(large_vector_2), tensor_product);
+        assert_eq!(large_vector_1.tensor_prod(&large_vector_2), tensor_product);
     }
 
     #[test]

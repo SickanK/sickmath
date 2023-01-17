@@ -1,4 +1,3 @@
-use crate::vector::large_vector::into_vec::IntoVec;
 use std::convert::TryInto;
 
 use crate::vector::large_vector::LargeVector;
@@ -35,6 +34,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::vector::large_vector::into_vec::IntoVec;
+
     use super::*;
 
     #[test]

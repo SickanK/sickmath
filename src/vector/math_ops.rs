@@ -26,8 +26,8 @@ where
 
     fn add(self, rhs: Self) -> Self {
         match self {
-            Self::Small(small_vector) => Vector::Small(small_vector.add_vector(rhs)),
-            Self::Large(large_vector) => Vector::Large(large_vector.add_vector(rhs)),
+            Self::Small(small_vector) => Vector::Small(small_vector.add_vector(&rhs)),
+            Self::Large(large_vector) => Vector::Large(large_vector.add_vector(&rhs)),
         }
     }
 }
@@ -48,8 +48,8 @@ where
 {
     fn add_assign(&mut self, rhs: Self) {
         match self {
-            Self::Small(small_vector) => small_vector.add_vector_mut(rhs),
-            Self::Large(large_vector) => large_vector.add_vector_mut(rhs),
+            Self::Small(small_vector) => small_vector.add_vector_mut(&rhs),
+            Self::Large(large_vector) => large_vector.add_vector_mut(&rhs),
         }
     }
 }
@@ -72,8 +72,8 @@ where
 
     fn sub(self, rhs: Self) -> Self {
         match self {
-            Self::Small(small_vector) => Vector::Small(small_vector.sub_vector(rhs)),
-            Self::Large(large_vector) => Vector::Large(large_vector.add_vector(rhs)),
+            Self::Small(small_vector) => Vector::Small(small_vector.sub_vector(&rhs)),
+            Self::Large(large_vector) => Vector::Large(large_vector.add_vector(&rhs)),
         }
     }
 }
@@ -94,8 +94,8 @@ where
 {
     fn sub_assign(&mut self, rhs: Self) {
         match self {
-            Self::Small(small_vector) => small_vector.sub_vector_mut(rhs),
-            Self::Large(large_vector) => large_vector.add_vector_mut(rhs),
+            Self::Small(small_vector) => small_vector.sub_vector_mut(&rhs),
+            Self::Large(large_vector) => large_vector.add_vector_mut(&rhs),
         }
     }
 }
@@ -118,8 +118,8 @@ where
 
     fn mul(self, rhs: Self) -> Self {
         match self {
-            Self::Small(small_vector) => Vector::Small(small_vector.entrywise(rhs)),
-            Self::Large(large_vector) => Vector::Large(large_vector.entrywise(rhs)),
+            Self::Small(small_vector) => Vector::Small(small_vector.entrywise(&rhs)),
+            Self::Large(large_vector) => Vector::Large(large_vector.entrywise(&rhs)),
         }
     }
 }
@@ -140,8 +140,8 @@ where
 {
     fn mul_assign(&mut self, rhs: Self) {
         match self {
-            Self::Small(small_vector) => small_vector.entrywise_mut(rhs),
-            Self::Large(large_vector) => large_vector.entrywise_mut(rhs),
+            Self::Small(small_vector) => small_vector.entrywise_mut(&rhs),
+            Self::Large(large_vector) => large_vector.entrywise_mut(&rhs),
         }
     }
 }

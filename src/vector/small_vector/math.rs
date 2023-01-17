@@ -40,7 +40,7 @@ where
         }
     }
 
-    fn dot(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> isize {
+    fn dot(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> isize {
         let mut acc: T = T::default();
 
         for idx in 0..N {
@@ -50,7 +50,7 @@ where
         ToPrimitive::to_isize(&acc).expect("Type of T is not supported")
     }
 
-    fn add_vector(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self {
+    fn add_vector(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self {
         let mut added_array: [T; N] = [T::default(); N];
 
         for (idx, num) in added_array.iter_mut().enumerate() {
@@ -60,13 +60,13 @@ where
         SmallVector { data: added_array }
     }
 
-    fn add_vector_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) {
+    fn add_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) {
         for (idx, num) in self.iter_mut().enumerate() {
             *num += rhs[idx];
         }
     }
 
-    fn sub_vector(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self {
+    fn sub_vector(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self {
         let mut subtracted_array: [T; N] = [T::default(); N];
 
         for (idx, num) in subtracted_array.iter_mut().enumerate() {
@@ -78,13 +78,13 @@ where
         }
     }
 
-    fn sub_vector_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) {
+    fn sub_vector_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) {
         for (idx, num) in self.iter_mut().enumerate() {
             *num -= rhs[idx];
         }
     }
 
-    fn entrywise(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self {
+    fn entrywise(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self {
         let mut multiplied_array: [T; N] = [T::default(); N];
 
         for (idx, num) in multiplied_array.iter_mut().enumerate() {
@@ -96,13 +96,13 @@ where
         }
     }
 
-    fn entrywise_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) {
+    fn entrywise_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) {
         for (idx, num) in self.iter_mut().enumerate() {
             *num *= rhs[idx];
         }
     }
 
-    fn cross(&self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) -> Self {
+    fn cross(&self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) -> Self {
         if N != 3 {
             panic!("The cross product requires that the length of both vectors must be 3");
         }
@@ -118,7 +118,7 @@ where
         }
     }
 
-    fn cross_mut(&mut self, rhs: impl MathVector<T, N> + Index<usize, Output = T>) {
+    fn cross_mut(&mut self, rhs: &(impl MathVector<T, N> + Index<usize, Output = T>)) {
         if N != 3 {
             panic!("The cross product requires that the length of both vectors must be 3");
         }
@@ -131,7 +131,7 @@ where
 
     fn tensor_prod<const M: usize>(
         &self,
-        rhs: impl MathVector<T, N> + Index<usize, Output = T>,
+        rhs: &(impl MathVector<T, N> + Index<usize, Output = T>),
     ) -> Matrix<T, M, N> {
         let mut tensor_product: Matrix<T, M, N> = Matrix::new([[T::default(); N]; M]);
 
@@ -202,7 +202,7 @@ mod tests {
 
         let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        assert_eq!(small_vector_1.dot(small_vector_2), 70);
+        assert_eq!(small_vector_1.dot(&small_vector_2), 70);
     }
 
     #[test]
@@ -216,7 +216,7 @@ mod tests {
         };
 
         assert_eq!(
-            small_vector_1.add_vector(small_vector_2),
+            small_vector_1.add_vector(&small_vector_2),
             added_small_vector
         );
     }
@@ -227,7 +227,7 @@ mod tests {
 
         let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        small_vector.add_vector_mut(small_vector_2);
+        small_vector.add_vector_mut(&small_vector_2);
 
         let added_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [6, 8, 10, 12],
@@ -244,7 +244,7 @@ mod tests {
         let subtracted_small_vector: SmallVector<u8, 4> = SmallVector { data: [4, 4, 4, 4] };
 
         assert_eq!(
-            small_vector_1.sub_vector(small_vector_2),
+            small_vector_1.sub_vector(&small_vector_2),
             subtracted_small_vector
         );
     }
@@ -255,7 +255,7 @@ mod tests {
 
         let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [1, 2, 3, 4] };
 
-        small_vector.sub_vector_mut(small_vector_2);
+        small_vector.sub_vector_mut(&small_vector_2);
 
         let subtracted_small_vector: SmallVector<u8, 4> = SmallVector { data: [4, 4, 4, 4] };
         assert_eq!(small_vector, subtracted_small_vector);
@@ -272,7 +272,7 @@ mod tests {
         };
 
         assert_eq!(
-            small_vector_1.entrywise(small_vector_2),
+            small_vector_1.entrywise(&small_vector_2),
             multiplied_small_vector
         );
     }
@@ -283,7 +283,7 @@ mod tests {
 
         let small_vector_2: SmallVector<u8, 4> = SmallVector { data: [5, 6, 7, 8] };
 
-        small_vector.entrywise_mut(small_vector_2);
+        small_vector.entrywise_mut(&small_vector_2);
 
         let multiplied_small_vector: SmallVector<u8, 4> = SmallVector {
             data: [5, 12, 21, 32],
@@ -297,9 +297,9 @@ mod tests {
 
         let small_vector_2: SmallVector<i8, 3> = SmallVector { data: [4, 5, 6] };
 
-        let crossed_small_vector: SmallVector<i8, 3> = SmallVector { data: [-3, 6, -3] };
+        let crossed_small_vector: SmallVector<i8, 3> = small_vector_1.cross(&small_vector_2);
 
-        assert_eq!(small_vector_1.cross(small_vector_2), crossed_small_vector);
+        assert_eq!(SmallVector { data: [-3, 6, -3] }, crossed_small_vector);
     }
 
     #[test]
@@ -308,7 +308,7 @@ mod tests {
 
         let small_vector_2: SmallVector<i8, 3> = SmallVector { data: [4, 5, 6] };
 
-        small_vector.cross_mut(small_vector_2);
+        small_vector.cross_mut(&small_vector_2);
 
         let crossed_small_vector: SmallVector<i8, 3> = SmallVector { data: [-3, 6, -3] };
         assert_eq!(small_vector, crossed_small_vector);
@@ -324,7 +324,7 @@ mod tests {
 
         let tensor_product: Matrix<u8, 3, 3> = Matrix::new(crossed_matrix_data);
 
-        assert_eq!(small_vector_1.tensor_prod(small_vector_2), tensor_product);
+        assert_eq!(small_vector_1.tensor_prod(&small_vector_2), tensor_product);
     }
 
     #[test]

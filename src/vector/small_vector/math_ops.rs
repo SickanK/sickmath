@@ -26,7 +26,7 @@ where
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
-        self.add_vector(rhs)
+        self.add_vector(&rhs)
     }
 }
 
@@ -45,7 +45,7 @@ where
         + Debug,
 {
     fn add_assign(&mut self, rhs: Self) {
-        self.add_vector_mut(rhs)
+        self.add_vector_mut(&rhs)
     }
 }
 
@@ -66,7 +66,7 @@ where
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self {
-        self.sub_vector(rhs)
+        self.sub_vector(&rhs)
     }
 }
 
@@ -85,7 +85,7 @@ where
         + Debug,
 {
     fn sub_assign(&mut self, rhs: Self) {
-        self.sub_vector_mut(rhs)
+        self.sub_vector_mut(&rhs)
     }
 }
 
@@ -106,7 +106,7 @@ where
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
-        self.entrywise(rhs)
+        self.entrywise(&rhs)
     }
 }
 
@@ -125,7 +125,7 @@ where
         + Debug,
 {
     fn mul_assign(&mut self, rhs: Self) {
-        self.entrywise_mut(rhs)
+        self.entrywise_mut(&rhs)
     }
 }
 
