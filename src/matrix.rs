@@ -3,14 +3,14 @@ pub mod iterator;
 pub mod math;
 pub mod transpose;
 
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::Index};
 
 use crate::vector::Vector;
 use into_2d_vector::Into2dVector;
 use num::FromPrimitive;
 use rand::{distributions::Standard, prelude::Distribution};
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct Matrix<T, const M: usize, const N: usize> {
     inner: [Vector<T, N>; M],
 }
@@ -47,5 +47,13 @@ where
         Matrix {
             inner: vec![Vector::default(); M].into_2d_vector(),
         }
+    }
+}
+
+impl<T, const M: usize, const N: usize> Index<usize> for Matrix<T, M, N> {
+    type Output = Vector<T, N>;
+
+    fn index(&self, idx: usize) -> &Self::Output {
+        &self.inner[idx]
     }
 }
